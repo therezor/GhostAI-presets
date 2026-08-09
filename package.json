@@ -1,0 +1,21 @@
+{
+  "name": "@ghostbot/catalogue",
+  "version": "1.0.1",
+  "description": "GhostAI agent presets and toolbox definitions.",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/therezor/ghostai-catalogue.git"
+  },
+  "homepage": "https://github.com/therezor/ghostai-catalogue",
+  "files": [
+    "presets",
+    "toolboxes",
+    "build.sh"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}
