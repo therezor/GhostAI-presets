@@ -6,9 +6,9 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/therezor/ghostai-presets.git"
+    "url": "git+https://github.com/therezor/GhostAI-presets.git"
   },
-  "homepage": "https://github.com/therezor/ghostai-presets",
+  "homepage": "https://github.com/therezor/GhostAI-presets",
   "files": [
     "presets",
     "toolboxes",
