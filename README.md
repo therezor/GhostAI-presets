@@ -1,4 +1,4 @@
-# GhostAI catalogue
+# ghostai-presets
 
 The things an operator installs into [GhostAI](https://github.com/therezor/GhostAI):
 agent presets, and the toolboxes some of them run in. Data only — no
