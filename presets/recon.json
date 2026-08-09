@@ -13,7 +13,7 @@
     "skill": "allow"
   },
   "toolbox": {
-    "name": "web-research",
+    "name": "recon",
     "network": {
       "mode": "open",
       "allow": []
