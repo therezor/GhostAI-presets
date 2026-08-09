@@ -29,7 +29,7 @@
       "prompt": "Reads, runs and modifies code in the workspace: runs tests, writes scripts, makes focused changes, and installs the dependencies a project pins. Name the files or the directory to start from, and say whether adding a dependency is in scope."
     },
     {
-      "id": "security-tester",
+      "id": "exploiter",
       "prompt": "Tests a web target for vulnerabilities and confirms them, for authorized security testing: content and parameter discovery, nuclei and nikto sweeps, SQL/XSS/command injection (sqlmap, dalfox, commix), and credential and auth testing (hydra, jwt_tool, john). Has network access. Give it the target URL(s) and any recon inventory; ask for confirmed findings with reproduction steps written to the workspace."
     }
   ]

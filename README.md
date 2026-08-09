@@ -17,6 +17,9 @@ finds `presets/` at runtime — in a global npm install and a local checkout
 alike — by resolving `require.resolve('@ghostbot/catalogue/package.json')`
 rather than any path relative to `dist/`.
 
+Want to add your own agent? See [CONTRIBUTING.md](CONTRIBUTING.md) for a plain,
+step-by-step guide and how to open a pull request.
+
 ## Presets
 
 One JSON file per agent, all in one directory, whether or not the agent needs a
