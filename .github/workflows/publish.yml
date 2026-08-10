@@ -1,0 +1,52 @@
+name: Publish to npm
+
+# Publishes @ghostwire/presets when a GitHub Release is published. The release
+# tag must be v<version> matching package.json, e.g. v1.0.0. Provenance is
+# attached automatically (publishConfig.provenance is set), which is why this
+# job requests the id-token permission.
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  id-token: write # required for npm provenance (OIDC)
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20 # ships npm 10, which supports --provenance
+          registry-url: https://registry.npmjs.org
+
+      - name: Verify release tag matches package.json version
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          pkg="$(node -p "require('./package.json').version")"
+          if [ "$tag" != "$pkg" ]; then
+            echo "Release tag '${GITHUB_REF_NAME}' does not match package.json version '${pkg}'." >&2
+            echo "Tag the release v${pkg}, or bump package.json to match." >&2
+            exit 1
+          fi
+          echo "Publishing version ${pkg}."
+
+      - name: Validate that every preset and toolbox manifest is valid JSON
+        run: |
+          fail=0
+          while IFS= read -r f; do
+            if ! node -e "JSON.parse(require('fs').readFileSync(process.argv[1],'utf8'))" "$f" 2>/dev/null; then
+              echo "invalid JSON: $f" >&2
+              fail=1
+            fi
+          done < <(find agents toolboxes -name '*.json' -type f)
+          [ "$fail" -eq 0 ] || exit 1
+
+      - name: Publish
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
