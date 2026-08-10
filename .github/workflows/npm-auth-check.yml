@@ -1,0 +1,25 @@
+name: npm auth check
+
+# Temporary diagnostic: confirms the NPM_TOKEN secret resolves to a real npm
+# user and reports the npm version in use. Safe to delete once publishing works.
+
+on: workflow_dispatch
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+      - name: Report npm version and identity
+        run: |
+          echo "npm version: $(npm --version)"
+          echo "whoami:"
+          npm whoami
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
