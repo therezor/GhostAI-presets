@@ -12,7 +12,7 @@
 # *run* it until its hash is approved, which is a separate operator action —
 # editing a manifest silently revokes its approval, and that is the point.
 #
-# Usage:  ./build.sh web-research
+# Usage:  ./build.sh recon
 set -euo pipefail
 
 name="${1:?usage: build.sh <toolbox-name>}"
@@ -49,19 +49,19 @@ echo "    toolbox ${target}/toolbox.json"
 echo
 echo "Not yet approved. Review the manifest above, then approve it:"
 echo
-echo "    ghost toolbox approve ${name}"
+echo "    ghostai toolbox approve ${name}"
 
 # The preset that runs in this box, if one ships. Presets live in one directory
 # and name their toolbox rather than sitting beside it, so this is a search
 # rather than a path — and the id it prints is usually not the toolbox's name
 # (`coding` is run by `coder`, `data` by `data-analyst`).
-for preset in "${here}"/presets/*.json; do
+for preset in "${here}"/agents/*.json; do
   [[ -f "${preset}" ]] || continue
   if grep -Eq "\"name\"[[:space:]]*:[[:space:]]*\"${name}\"" "${preset}"; then
     echo
     echo "Then install the agent that works in it:"
     echo
-    echo "    ghost agent install $(basename "${preset}" .json)"
+    echo "    ghostai agent install $(basename "${preset}" .json)"
   fi
 done
 echo

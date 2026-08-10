@@ -1,6 +1,6 @@
 {
-  "name": "@ghostbot/catalogue",
-  "version": "1.0.1",
+  "name": "@ghostwire/presets",
+  "version": "1.0.0",
   "description": "GhostAI agent presets and toolbox definitions.",
   "type": "module",
   "license": "MIT",
@@ -10,7 +10,7 @@
   },
   "homepage": "https://github.com/therezor/GhostAI-presets",
   "files": [
-    "presets",
+    "agents",
     "toolboxes",
     "build.sh"
   ],

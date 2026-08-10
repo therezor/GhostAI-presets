@@ -14,8 +14,8 @@ Most contributions are just a preset.
 
 ## Create a preset
 
-Make a file at `presets/<your-id>.json`. **The filename is the agent's id**, so
-`presets/translator.json` creates an agent called `translator`.
+Make a file at `agents/<your-id>.json`. **The filename is the agent's id**, so
+`agents/translator.json` creates an agent called `translator`.
 
 The smallest useful preset is a name, a label, and what the agent should do:
 
@@ -54,10 +54,10 @@ That's a complete, valid preset. A few things worth knowing:
   ```
 
 - **A pure-chat agent** (no file access, no commands) sets
-  `"toolsEnabled": false` and nothing else. See `presets/nano.json`.
+  `"toolsEnabled": false` and nothing else. See `agents/nano.json`.
 - **Delegators** — an agent that hands work to other agents — list them under
   `subagents`, each with an `id` and a one-line description of when to use it.
-  See `presets/team-lead.json`.
+  See `agents/team-lead.json`.
 
 Full field list: `id`, `label`, `systemPrompt`, `toolsEnabled`, `tools`,
 `toolbox`, `subagents`, plus the optional extra prompt slots (`livePrompt`,
@@ -93,7 +93,7 @@ Build and try it locally:
 
 ```bash
 ./build.sh <name>          # builds the image and installs the manifest
-ghost toolbox approve <name>   # you review it, then approve it
+ghostai toolbox approve <name>   # you review it, then approve it
 ```
 
 Nothing runs until you approve it — approving records the exact bytes you read,
@@ -102,7 +102,7 @@ so an image can't change underneath you.
 ## Test it locally
 
 ```bash
-ghost agent install <your-id>
+ghostai agent install <your-id>
 ```
 
 If your preset uses a toolbox, build and approve that first (above). Then start
@@ -114,7 +114,7 @@ a chat with the agent and make sure it behaves the way your prompt describes.
 2. Add your file(s) on a new branch.
 3. Keep it small — one preset (or one toolbox) per pull request.
 4. In the description, say what the agent is for and confirm you tested it with
-   `ghost agent install`.
+   `ghostai agent install`.
 5. Open the PR against `main`.
 
 That's it. Thanks for contributing.

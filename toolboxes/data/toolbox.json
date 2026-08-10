@@ -94,7 +94,7 @@
       "requiresArgs": true
     }
   ],
-  "notes": "Identify first: `file` on anything with a vague extension, then `7z l` if it is a container. Convert a document once with `anydoc`, save the markdown, and `rg` the saved file rather than converting again. Sanity-check before summarising — `mlr --c2p head -n 5` and a row count catch a wrong delimiter or a header read as data before either becomes a confident wrong number. Write derived results to files and name them. `tar`, `zip` and `xz` are here too for the cases 7z handles awkwardly. There is no OCR — a scanned PDF has no text layer and converts to nothing, which the web-research toolbox's `doc` command handles instead. Paths are the same ones the file tools use: write `uploads/sales.csv`, not an absolute path.",
+  "notes": "Identify first: `file` on anything with a vague extension, then `7z l` if it is a container. Convert a document once with `anydoc`, save the markdown, and `rg` the saved file rather than converting again. Sanity-check before summarising — `mlr --c2p head -n 5` and a row count catch a wrong delimiter or a header read as data before either becomes a confident wrong number. Write derived results to files and name them. `tar`, `zip` and `xz` are here too for the cases 7z handles awkwardly. There is no OCR — a scanned PDF has no text layer and converts to nothing, which the recon toolbox's `doc` command handles instead. Paths are the same ones the file tools use: write `uploads/sales.csv`, not an absolute path.",
   "expose": "tools",
   "image": "__IMAGE_ID__",
   "runtime": "runc",
