@@ -1,6 +1,6 @@
 {
   "name": "@ghostwire/presets",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "GhostAI agent presets and toolbox definitions.",
   "type": "module",
   "license": "MIT",
@@ -12,6 +12,7 @@
   "files": [
     "agents",
     "toolboxes",
+    "skills",
     "build.sh"
   ],
   "publishConfig": {

@@ -7,6 +7,7 @@ TypeScript, no build step, nothing imported.
 ```
 agents/<id>.json           an agent preset. The filename is the agent id.
 toolboxes/<name>/          a Dockerfile and the manifest describing its policy
+skills/<name>/SKILL.md     one skill sheet, the procedure an agent reads
 build.sh <name>            builds one image and installs its manifest
 ```
 
@@ -29,6 +30,16 @@ container. `ghostai agent install <id>` reads them from here, after looking in
 A preset that needs a toolbox names it in `toolbox.name`; the toolbox itself is
 installed and approved separately, and installing the preset refuses until it
 is.
+
+## Skills
+
+One directory per sheet, each holding a `SKILL.md` — the procedure an agent
+reads when it needs one, rather than something it carries in every prompt.
+
+A preset names the sheets it wants, and `ghostai agent install <id>` copies
+them into the workspace's `skills/`. They are the agent's to read, not the
+operator's to approve: a sheet is text, and nothing in one grants a capability
+the toolbox has not already allowed.
 
 ## Toolboxes
 
