@@ -13,20 +13,10 @@
     "skill": "allow"
   },
   "toolbox": {
-    "name": "recon",
+    "name": "web-research",
     "network": {
       "mode": "open",
       "allow": []
-    },
-    "tools": {
-      "*": "deny",
-      "search": "allow",
-      "fetch": "allow",
-      "doc": "allow",
-      "rg": "allow",
-      "jq": "allow",
-      "curl": "ask",
-      "wget": "ask"
     }
   }
 }

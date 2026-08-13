@@ -23,12 +23,43 @@ target="${home}/toolboxes/${name}"
 
 [[ -d "${context}" ]] || { echo "no such toolbox source: ${context}" >&2; exit 1; }
 
+# The uid:gid the container will run as. It has to match whoever owns the mounted
+# workspace, or a tool that writes its own output file (`nmap -oN`, `httpx -o`)
+# does so as the wrong user and the host's `0755` workspace rejects it. A fixed
+# 1000 is only right on a stock Linux desktop; on macOS the first user is 501 and
+# on a NAS it is something else again. So we discover it here rather than baking a
+# guess. The image is built locally and pinned by content hash, never pulled, so a
+# per-machine uid in it is exactly as machine-local as the image id already is.
+#
+# Priority: an explicit override, then the owner of the workspace GhostAI will
+# actually mount (the ground truth), then whoever is running this build.
+if [[ -n "${GHOSTAI_UID:-}" || -n "${GHOSTAI_GID:-}" ]]; then
+  uid="${GHOSTAI_UID:-$(id -u)}"; gid="${GHOSTAI_GID:-$(id -g)}"
+  uid_src="GHOSTAI_UID/GHOSTAI_GID override"
+elif owner="$(stat -c '%u:%g' "${home}/workspace" 2>/dev/null \
+           || stat -f '%u:%g' "${home}/workspace" 2>/dev/null)" && [[ -n "${owner}" ]]; then
+  uid="${owner%%:*}"; gid="${owner##*:}"
+  uid_src="owner of ${home}/workspace"
+else
+  uid="$(id -u)"; gid="$(id -g)"
+  uid_src="current user (workspace not found)"
+fi
+[[ "${uid}" =~ ^[0-9]+$ && "${gid}" =~ ^[0-9]+$ ]] || {
+  echo "could not resolve a numeric uid:gid (got '${uid}:${gid}')" >&2; exit 1;
+}
+echo "==> container user ${uid}:${gid} (${uid_src})"
+
 echo "==> building ${name}"
 # `--iidfile` rather than parsing `docker images`: the latter is racy when two
 # builds run, and reports a short id that cannot be pinned.
+# `--build-arg` maps the container's ghost user to the host uid:gid resolved
+# above; the Dockerfile defaults to 1000 when built without them.
 iid_file="$(mktemp)"
 trap 'rm -f "${iid_file}"' EXIT
-docker build --iidfile "${iid_file}" -t "ghostai/${name}:local" "${context}"
+docker build \
+  --build-arg GHOST_UID="${uid}" \
+  --build-arg GHOST_GID="${gid}" \
+  --iidfile "${iid_file}" -t "ghostai/${name}:local" "${context}"
 
 image_id="$(cat "${iid_file}")"
 [[ "${image_id}" =~ ^sha256:[0-9a-f]{64}$ ]] || {
@@ -38,10 +69,12 @@ image_id="$(cat "${iid_file}")"
 
 echo "==> installing manifest to ${target}"
 mkdir -p "${target}"
-# The placeholder is replaced rather than the file being generated, so the
+# The placeholders are replaced rather than the file being generated, so the
 # manifest an operator reviews in the repo is the manifest that gets installed
-# apart from one field.
-sed "s|__IMAGE_ID__|${image_id}|" "${context}/toolbox.json" > "${target}/toolbox.json"
+# apart from two fields: the image id, and the uid:gid resolved above.
+sed -e "s|__IMAGE_ID__|${image_id}|" \
+    -e "s|__HOST_USER__|${uid}:${gid}|" \
+    "${context}/toolbox.json" > "${target}/toolbox.json"
 
 echo
 echo "    image   ${image_id}"

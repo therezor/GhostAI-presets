@@ -50,3 +50,25 @@ manifest and installs it to `~/.ghostai/toolboxes/<name>/`. Nothing runs until
 An image is referenced by its content-addressed **image id**, not a registry
 tag, so an approved toolbox cannot change underneath the operator who approved
 it — and so GhostAI runs on a machine with no internet.
+
+### User and permissions
+
+A toolbox runs as a non-root user whose **uid:gid is mapped to the operator's own**,
+so anything a tool writes into the mounted workspace (`nmap -oN …`, `fetch --save …`)
+stays owned by — and editable by — the host user. `build.sh` discovers this
+automatically at build time: it takes the owner of `~/.ghostai/workspace` (falling
+back to whoever runs the build), bakes it into the image via the `GHOST_UID` /
+`GHOST_GID` build args, and writes it into the manifest's `user` field in place of
+the `__HOST_USER__` placeholder. Nothing machine-specific is committed — the tracked
+manifests carry the placeholder and the Dockerfiles default to `1000`.
+
+Override the detection when GhostAI runs as a different account than the one building
+(e.g. a dedicated NAS service user):
+
+```
+GHOSTAI_UID=1026 GHOSTAI_GID=100 ./build.sh recon
+```
+
+Files left over from an earlier build under a different uid keep their old
+ownership; chown the workspace once to catch up:
+`chown -R <uid>:<gid> ~/.ghostai/workspace`.

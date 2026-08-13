@@ -99,7 +99,7 @@
   "image": "__IMAGE_ID__",
   "runtime": "runc",
   "workdir": "/workspace",
-  "user": "1000:1000",
+  "user": "__HOST_USER__",
   "caps": {
     "drop": ["ALL"],
     "add": []

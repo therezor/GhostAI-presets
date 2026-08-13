@@ -69,10 +69,17 @@ RUN for encoder in libx264 libx265 libvpx-vp9 libaom-av1 libsvtav1 libopus libmp
  && mediainfo --Version >/dev/null \
  && gifsicle --version >/dev/null
 
-# A non-root user whose uid matches the profile's `user`, so anything written
-# into the mounted workspace stays editable by the host's own tools. Root-owned
-# artefacts are the most common complaint about this whole pattern.
-RUN adduser -D -u 1000 -h /home/ghost ghost
+# A non-root user mapped to the host's uid:gid via the GHOST_UID/GHOST_GID build
+# args — build.sh fills them from the workspace owner, and both default to 1000
+# for a bare `docker build`. Matching the host user is what keeps anything the box
+# writes into the mounted workspace owned by, and editable by, that user; a fixed
+# uid was the most common source of root-owned / unwritable artefacts.
+ARG GHOST_UID=1000
+ARG GHOST_GID=1000
+RUN set -eux; \
+    if ! getent group "${GHOST_GID}" >/dev/null 2>&1; then addgroup -g "${GHOST_GID}" ghost; fi; \
+    grp="$(getent group "${GHOST_GID}" | cut -d: -f1)"; \
+    adduser -D -u "${GHOST_UID}" -G "${grp}" -h /home/ghost ghost
 
 ENV HOME=/home/ghost
 
