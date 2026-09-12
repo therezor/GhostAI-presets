@@ -1,9 +1,18 @@
 name: Publish to npm
 
 # Publishes @ghostwire/presets when a GitHub Release is published. The release
-# tag must be v<version> matching package.json, e.g. v1.0.0. Provenance is
-# attached automatically (publishConfig.provenance is set), which is why this
-# job requests the id-token permission.
+# tag must be v<version> matching package.json, e.g. v1.0.0.
+#
+# Auth is npm **trusted publishing**: npm is configured with this repository and
+# this workflow filename as a trusted publisher, and the CLI exchanges the OIDC
+# token GitHub mints for a short-lived publish credential. That is what the
+# id-token permission below is for, and it is why there is no NPM_TOKEN here —
+# a long-lived token in a secret is the thing this replaces. It expired once and
+# took a release with it.
+#
+# **Do not add NODE_AUTH_TOKEN back.** npm prefers a token when it finds one, so
+# setting it silently returns this workflow to the credential it no longer has.
+# Provenance comes free on this path; npm attaches it without the flag.
 
 on:
   release:
@@ -11,7 +20,7 @@ on:
 
 permissions:
   contents: read
-  id-token: write # required for npm provenance (OIDC)
+  id-token: write # the OIDC token npm trades for a publish credential
 
 jobs:
   publish:
@@ -19,9 +28,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Trusted publishing needs npm >= 11.5.1 and node >= 22.14. Node 24 is the
+      # current LTS and ships npm 11.19; node 20's npm 10 cannot do the OIDC
+      # exchange at all, which is why this moved.
       - uses: actions/setup-node@v4
         with:
-          node-version: 20 # ships npm 10, which supports --provenance
+          node-version: 24
           registry-url: https://registry.npmjs.org
 
       - name: Verify release tag matches package.json version
@@ -48,5 +60,3 @@ jobs:
 
       - name: Publish
         run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
