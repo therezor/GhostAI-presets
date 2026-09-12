@@ -13,6 +13,12 @@ and do not get blamed for it, and **after**, so you know what you actually did.
   (`jq .scripts package.json`), then run `npm test` or the specific
   `npm run <script>`. For one file, use the runner the project already uses
   (`node --test path`, `npx vitest run path`), not a different one.
+- Rust tests: `cargo test --locked`, and `cargo test --locked <filter>` for one
+  test or module. Budget for the first run — it compiles every dependency from
+  source and can take minutes where `npm test` takes seconds; the second run
+  reuses `target/` and is fast. `cargo clippy --locked` and `cargo fmt --check`
+  are the other two things a Rust reviewer will run, so run them before saying a
+  change is done.
 - Python tests: `python3` here is standard library only, so `pytest` is not
   available unless the project vendors it — use `python3 -m unittest` for stdlib
   tests, and say so plainly if a project needs a runner that is not installed.

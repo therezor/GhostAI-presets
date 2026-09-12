@@ -1,7 +1,7 @@
 {
   "schema": "ghostai.toolbox/1",
   "name": "coding",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "label": "Coding",
   "tools": [
     {
@@ -45,6 +45,14 @@
       "requiresArgs": true
     },
     {
+      "name": "cargo",
+      "use": "Build, test, lint and format Rust: cargo build, cargo test, cargo clippy, cargo fmt. It is how Rust runs here — nothing executes until it compiles.",
+      "args": "An ordinary cargo subcommand. Pass --locked to build, test and clippy when Cargo.lock is present, so they use the versions the project pins rather than resolving newer ones — not to `add`, which has to update the lockfile.",
+      "example": ["test", "--locked"],
+      "permission": "allow",
+      "requiresArgs": true
+    },
+    {
       "name": "jq",
       "use": "Filter or reshape JSON — a package.json field, a config value, tool output.",
       "args": "A jq filter, then a file — or nothing after it to read stdin.",
@@ -53,7 +61,7 @@
       "requiresArgs": true
     }
   ],
-  "notes": "This box has network access, so dependency installs work — prefer `npm ci` or a lockfile-respecting install so the tree matches what the project pins. Run the project's tests before and after a change. Use the file tools for edits: they act on the same files a command sees under /workspace. Reaching the network is the one thing here that leaves the machine, so treat what you send as visible.",
+  "notes": "This box has network access, so dependency installs work — prefer `npm ci` or `cargo build --locked`, or another lockfile-respecting install, so the tree matches what the project pins. Cargo caches what it downloads in `.cargo/` inside the workspace rather than in the home directory, which is a small tmpfs — expect that directory to appear, and expect a second build to work with the network off. A first `cargo build` compiles every dependency from source, so it is slow in a way `npm ci` is not. Run the project's tests before and after a change. Use the file tools for edits: they act on the same files a command sees under /workspace. Reaching the network is the one thing here that leaves the machine, so treat what you send as visible.",
   "expose": "tools",
   "image": "__IMAGE_ID__",
   "runtime": "runc",
