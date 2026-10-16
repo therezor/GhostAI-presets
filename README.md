@@ -1,3 +1,10 @@
+> [!WARNING]
+> **No longer maintained.** These presets belong to
+> [GhostAI](https://github.com/therezor/GhostAI), which is archived. Its
+> successor is **[darkwire](https://github.com/therezor/darkwire)**. This
+> repository stays readable, so `ghostai preset install` keeps working on
+> GhostAI 0.8.1, but it is archived and receives no updates.
+
 # ghostai-presets
 
 The things an operator installs into [GhostAI](https://github.com/therezor/GhostAI):
